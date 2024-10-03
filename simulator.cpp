@@ -8,6 +8,10 @@ using namespace simulator;
 
 void simulator::executeInstruction(vector<uint32_t> instructions, uint32_t &PC , bool step)
 {
+    if(PC/4 >= instructions.size() && step)
+    {
+        cout << "Nothing to step" << endl;
+    }
     while(PC/4 < instructions.size())
     {
         cout << "Executed " << hex << setw(8) << setfill('0') << instructions[PC / 4] << "PC = 0x" << hex << setw(8) << setfill('0') << PC << endl;
@@ -324,6 +328,7 @@ void simulator::executeInstruction(vector<uint32_t> instructions, uint32_t &PC ,
                     imm |= 0xFFFFF000;
                 }
 
+                cout << imm << endl;
                 writeReg(rd, PC + 4);
                 PC += imm - 4;
                 break;
@@ -342,8 +347,8 @@ void simulator::executeInstruction(vector<uint32_t> instructions, uint32_t &PC ,
                 }
 
                 uint64_t rs1Value = readReg(rs1);
-                PC = ((rs1Value + imm) / 2 ) * 2;
-
+                PC = (rs1Value + imm) & ~1UL;
+                PC -= 4;
                 writeReg(rd, temp);
                 break;
             }

@@ -173,7 +173,7 @@ vector<string> extractInstructions(ifstream &infile, unordered_map<string, int> 
                 continue;
             }
 
-            labelMap[label] = instructions.size();
+            labelMap[label] = lineNum - 1;
 
             string labelInstruction = line.substr(colon + 1);
             labelInstruction.erase(0, labelInstruction.find_first_not_of(" \t"));

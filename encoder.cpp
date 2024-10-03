@@ -216,7 +216,7 @@ vector<string> simulator::processInstructions(const vector<string> &instructions
             rs2 = rs2.substr(0, rs2.length() - 1);
             if (labelMap.find(imm_str) != labelMap.end())
             {
-                imm = ((labelMap[imm_str]) * 4) - PC;
+                imm = ((labelMap[imm_str] - 1) * 4) - PC;
             }
             else if(labelMap.find(imm_str) == labelMap.end())
             {

@@ -29,10 +29,6 @@ void showMem(uint32_t addr, int count)
 void stepInst(uint32_t &PC)
 {
     vector<uint32_t> encodedInstructions = fetchInst(0);
-    for(auto &inst : encodedInstructions)
-    {
-        cout << "0x" << hex << inst << endl;
-    }
     executeInstruction(encodedInstructions, PC, true);
 };
 void showStack()
