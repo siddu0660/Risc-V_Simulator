@@ -6,16 +6,30 @@ using namespace std;
 using namespace assembler;
 using namespace simulator;
 
-void simulator::executeInstruction(vector<uint32_t> instructions, uint32_t &PC , bool step)
+void simulator::executeInstruction(vector<string> instructions, vector<uint32_t> encodedInstructions, uint32_t &PC , bool step, vector<int> &breakpoints)
 {
-    if(PC/4 >= instructions.size() && step)
+    static bool isHalt = false;
+
+    if(PC/4 >= encodedInstructions.size() && step)
     {
         cout << "Nothing to step" << endl;
     }
-    while(PC/4 < instructions.size())
+    while(PC/4 < encodedInstructions.size())
     {
-        cout << "Executed " << hex << setw(8) << setfill('0') << instructions[PC / 4] << "PC = 0x" << hex << setw(8) << setfill('0') << PC << endl;
-        uint32_t instruction = instructions[PC/4];
+        if (find(breakpoints.begin(), breakpoints.end(), int(PC / 4)) != breakpoints.end())
+        {
+            if(!isHalt)
+            {
+                cout << "Execution Stopped at breakpoint" << endl;
+                isHalt = true;
+                return;
+            }
+
+            isHalt = false;
+        }
+
+        cout << "Executed " << instructions[PC / 4] << "; PC = 0x" << hex << setw(8) << setfill('0') << PC << endl;
+        uint32_t instruction = encodedInstructions[PC/4];
         uint32_t opcode = instruction & 0x7F;
 
         switch (opcode)
@@ -328,7 +342,6 @@ void simulator::executeInstruction(vector<uint32_t> instructions, uint32_t &PC ,
                     imm |= 0xFFFFF000;
                 }
 
-                cout << imm << endl;
                 writeReg(rd, PC + 4);
                 PC += imm - 4;
                 break;
@@ -376,7 +389,7 @@ void simulator::executeInstruction(vector<uint32_t> instructions, uint32_t &PC ,
                     else if (imm == 1)
                     {
                         cout << "EBREAK !!" << endl;
-                        exit(0);
+                        return;
                     }
                 }
                 break;

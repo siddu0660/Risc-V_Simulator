@@ -273,7 +273,7 @@ void processFile(const string &filename, unordered_map<string, int> &labelMap, v
     infile.close();
 }
 
-int simulator::parseMain(string filename, vector<string> instructions)
+int simulator::parseMain(string filename, vector<string> &instructions)
 {
     initializeMem();
     unordered_map<string, int> labelMap;

@@ -7,7 +7,7 @@ namespace simulator
     void setText(vector<string> encodedInstructions);
     vector<string> processInstructions(const vector<string> &instructions, unordered_map<string, int> &labelMap, int PC, const string &errorLog);
     void initializeMem();
-    int parseMain(string filename, vector<string> instructions);
+    int parseMain(string filename, vector<string> &instructions);
     void printMem(uint32_t addr, int n);
     void printRegisters();
     void writeReg(uint32_t regName, int64_t value);
@@ -15,5 +15,5 @@ namespace simulator
     void writeMem(uint32_t addr, uint64_t value, size_t size);
     uint64_t readMem(uint32_t addr, size_t size);
     vector<uint32_t> fetchInst(uint32_t PC);
-    void executeInstruction(vector<uint32_t> instructions, uint32_t &PC, bool step);
+    void executeInstruction(vector<string> instructions, vector<uint32_t> encodedInstructions, uint32_t &PC, bool step, vector<int> &breakpoints);
 }

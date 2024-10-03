@@ -7,16 +7,19 @@ using namespace simulator;
 void loadFile(const string &filename, vector<string> &instructions)
 {
     parseMain(filename,instructions);
+    cout << endl;
 }
-void run(uint32_t &PC, vector<string> &instructions)
+void run(uint32_t &PC, vector<string> &instructions, vector<int> &breakpoints)
 {
     vector<uint32_t> encodedInstructions = fetchInst(0);
-    executeInstruction(encodedInstructions, PC,false);
+    executeInstruction(instructions, encodedInstructions, PC,false,breakpoints);
+    cout << endl;
 };
 
 void showReg()
 {
     printRegisters();
+    cout << endl;
 };
 void exitSim()
 {
@@ -25,29 +28,42 @@ void exitSim()
 void showMem(uint32_t addr, int count)
 {
     printMem(addr, count);
+    cout << endl;
 };
-void stepInst(uint32_t &PC)
+void stepInst(uint32_t &PC, vector<int> &breakpoints, vector<string> &instructions)
 {
     vector<uint32_t> encodedInstructions = fetchInst(0);
-    executeInstruction(encodedInstructions, PC, true);
+    executeInstruction(instructions,encodedInstructions, PC, true, breakpoints);
+    cout << endl;
 };
 void showStack()
 {
     cout << "Show Stack....." << endl;
+    cout << endl;
 };
-void setBreakpoint(int line)
+void setBreakpoint(int line,vector<int> &breakpoints)
 {
-    cout << "Set Breakpoint....." << endl;
+    breakpoints.push_back(line);
+    sort(breakpoints.begin(), breakpoints.end());
+    cout << "Breakpoint set at line " << line << endl;
+    cout << endl;
 };
-void deleteBreakpoint(int line)
+void deleteBreakpoint(int line,vector<int> &breakpoints)
 {
-    cout << "Delete Breakpoint....." << endl;
+    auto i = find(breakpoints.begin(), breakpoints.end(), line);
+    if (i != breakpoints.end())
+    {
+        breakpoints.erase(i);
+    }
+    cout << "Breakpoint deleted at line " << line << endl;
+    cout << endl;
 };
 
 int main()
 {
     uint32_t PC = 0;
     vector<string> instructions;
+    vector<int> breakpoints;
     string input;
     while (true)
     {
@@ -59,7 +75,7 @@ int main()
         if(command == "test")
         {
             loadFile("input.s",instructions);
-            run(PC, instructions);
+            run(PC, instructions, breakpoints);
         }
         if (command == "load")
         {
@@ -68,7 +84,7 @@ int main()
         }
         else if (command == "run")
         {
-            run(PC, instructions);
+            run(PC, instructions, breakpoints);
         }
         else if (command == "regs")
         {
@@ -87,7 +103,7 @@ int main()
         }
         else if (command == "step")
         {
-            stepInst(PC);
+            stepInst(PC, breakpoints, instructions);
         }
         else if (command == "show-stack")
         {
@@ -95,13 +111,14 @@ int main()
         }
         else if (command == "break")
         {
-            int line = stoi(arg1);
-            setBreakpoint(line);
+            int line = stoul(arg1, nullptr, 10);
+            setBreakpoint(line, breakpoints);
         }
+
         else if (command == "del" && arg1 == "break")
         {
-            int line = stoi(arg2);
-            deleteBreakpoint(line);
+            int line = stoul(arg2, nullptr, 10);
+            deleteBreakpoint(line,breakpoints);
         }
         else
         {

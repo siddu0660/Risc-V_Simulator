@@ -196,22 +196,22 @@ void simulator::printMem(uint32_t addr, int n)
         {
             int index = currentAddr - TEXT_START;
             uint8_t byte = textSegment[index];
-            cout << "Memory[0x" << hex << currentAddr << "] = 0x" << hex << setfill('0') << setw(2) << (int)byte << endl;
+            cout << "Memory[0x" << uppercase << hex << setfill('0') << setw(5) << currentAddr << "] = 0x" << uppercase << hex << setfill('0') << setw(2) << (int)byte << endl;
         }
         else if (currentAddr >= DATA_START && currentAddr < stackTop)
         {
             int index = currentAddr - DATA_START;
             uint8_t byte = dataSegment[index];
-            cout << "Memory[0x" << hex << currentAddr << "] = 0x" << hex << setfill('0') << setw(2) << (int)byte << endl;
+            cout << "Memory[0x" << uppercase << hex << setfill('0') << setw(5) << currentAddr << "] = 0x" << uppercase << hex << setfill('0') << setw(2) << (int)byte << endl;
         }
         else if (currentAddr >= stackTop && currentAddr < STACK_START)
         {
             int index = STACK_START - currentAddr;
-            cout << "Memory[0x" << hex << currentAddr << "] = 0x" << "Stack memory here" << endl;
+            cout << "Memory[0x" << uppercase << hex << setfill('0') << setw(5) << currentAddr << "] = 0x" << "Stack memory here" << endl;
         }
         else
         {
-            cerr << "Error: Address 0x" << hex << currentAddr << " is out of bounds!" << endl;
+            cerr << "Error: Address 0x" << uppercase << hex << currentAddr << " is out of bounds!" << endl;
             break;
         }
     }
@@ -249,7 +249,6 @@ void simulator::setText(vector<string> encodedInstructions)
             cerr << "Error: Text segment is out of bounds!" << endl;
             break;
         }
-        cout << instruction << endl;
         writeMem(textTop, stoul(instruction, nullptr, 16), 4);
         textTop += 4;
     }
